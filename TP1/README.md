@@ -10,8 +10,9 @@ This repository demonstrates the setup of a 3-tier web application using Docker,
 
 ⭐️ Attaching a volume to the PostgreSQL container is essential for data persistence. When you run a container, any data stored inside the container's file system will be lost if the container stops, crashes, or is removed. By attaching a volume, you ensure that your database data is stored on the host machine rather than within the ephemeral container storage. This way, even if the container is recreated or stopped, the data remains intact and can be accessed when the container restarts, which is critical for maintaining consistent and reliable data storage in a database environment.
 
-## 1-1 Documenting Database Container Essentials: Commands and Dockerfile
-Here's the Dockerfile for setting up a PostgreSQL container :
+## ❓ 1-1 Documenting Database Container Essentials: Commands and Dockerfile
+
+⭐️ Here's the Dockerfile for setting up a PostgreSQL container :
 
 <img width="730" alt="image" src="https://github.com/user-attachments/assets/2bad855d-0674-47a6-8ab4-e53c662c281f">
 
@@ -68,9 +69,117 @@ ENTRYPOINT ["java", "-jar", "myapp.jar"]
 
 ## ❓Question : Why do we need a reverse proxy?
 
+⭐️ A reverse proxy is essential for load balancing, enhancing security, simplifying client access, and improving performance with caching and compression. In Docker, it helps manage multi-container applications by streamlining communication and centralizing access.
+
+## ❓Question : Why is docker-compose so important? 
+
+⭐️ Docker Compose is essential because it simplifies managing multi-container applications. It allows you to define all services (e.g., database, backend, HTTP server) in a single file, enabling seamless setup, networking, and environment configuration. You can start everything with one command, manage persistent data easily, and have a centralized configuration for streamlined development, testing, and deployment. This is particularly useful in your TP for efficient management of interconnected services.
+
+## ❓ 1-3 Most Important Docker Compose Commands
+
+⭐️ Here are some essential `docker-compose` commands that are widely used:
+
+1. **Start Services**  
+   ```bash
+   docker-compose up
+   ```
+
+2. **Stop Services**  
+   ```bash
+   docker-compose down
+   ```
+   Stops and removes all the containers created by `docker-compose up`.
+
+3. **Rebuild Services**  
+   ```bash
+   docker-compose up --build
+   ```
+   Builds or rebuilds services before starting them.
+
+4. **View Running Containers**  
+   ```bash
+   docker-compose ps
+   ```
+   Lists the containers managed by Docker Compose.
+
+5. **Check Logs**  
+   ```bash
+   docker-compose logs
+   ```
+   Displays logs for all services. Use `docker-compose logs -f` for continuous log output.
+
+6. **Execute a Command in a Service Container**  
+   ```bash
+   docker-compose exec <service-name> <command>
+   ```
+   Runs a command in a running service container, e.g., `docker-compose exec db psql` to access the database container.
+
+### ❓ 1-4 Document the `docker-compose.yml` File
+
+Here’s an example explanation of a `docker-compose.yml` file configuration based on a typical setup:
+
+```yaml
+version: '3.7'
+
+services:
+  # Database service configuration
+  database:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: usr
+      POSTGRES_PASSWORD: pwd
+      POSTGRES_DB: db
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  # Backend API service configuration
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    depends_on:
+      - database
+    networks:
+      - app-network
+
+  # HTTP server (reverse proxy) configuration
+  httpd:
+    image: httpd:latest
+    volumes:
+      - ./config/httpd.conf:/usr/local/apache2/conf/httpd.conf
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+
+volumes:
+  db-data:
+```
+
+#### Explanation:
+
+1. **Services**  
+   - **database**: Defines the PostgreSQL database service with environment variables for user, password, and database name. A volume (`db-data`) is used to persist data.
+   - **backend**: Defines the backend API, built from a Dockerfile located in the `./backend` directory. The `depends_on` key ensures the database service starts before this service.
+   - **httpd**: Configures the HTTP server (reverse proxy) using the Apache HTTP image. It mounts a custom configuration file (`httpd.conf`) for reverse proxy setup.
+
+2. **Networks**  
+   Creates a custom network (`app-network`) to allow the services to communicate.
+
+3. **Volumes**  
+   Defines a named volume (`db-data`) to persist the database data even if the container stops or is removed.
+
+This structure supports an organized multi-service application with inter-service communication, simplified deployment, and persistent storage.
 
 
+## ❓ Question : Why do we put our images into an online repo?
 
+⭐️ Putting images in an online repo allows easy access, consistent sharing, version control, automated deployments, and serves as a reliable backup for your Docker images. It’s essential for collaboration, consistency across environments, and scaling.
 
 
 
