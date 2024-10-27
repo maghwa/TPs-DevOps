@@ -1,4 +1,4 @@
-# Docker Project: 3-Tier Web Application
+# ✨ Docker Project: 3-Tier Web Application ✨
 
 This repository demonstrates the setup of a 3-tier web application using Docker, including an HTTP server, a backend API, and a PostgreSQL database. Each component is containerized and managed using Docker and Docker Compose.
 
