@@ -66,10 +66,11 @@ ENTRYPOINT ["java", "-jar", "myapp.jar"]
 
 ```
 Second Stage (Final Stage):
-FROM amazoncorretto:17: Uses a smaller base image with only the Amazon Corretto JDK, without any build tools like Maven. This reduces the final image size.
-WORKDIR /app: Sets the working directory for the final image.
-COPY --from=myapp-build /app/target/*.jar myapp.jar: Copies only the built JAR file from the previous build stage (myapp-build) to the final image.
-ENTRYPOINT ["java", "-jar", "myapp.jar"]: Specifies the command to run the application.
+- FROM amazoncorretto:17: Uses a smaller base image with only the Amazon Corretto JDK, without any build tools like Maven. This reduces the final image size.
+
+- WORKDIR /app: Sets the working directory for the final image.
+- COPY --from=myapp-build /app/target/*.jar myapp.jar: Copies only the built JAR file from the previous build stage (myapp-build) to the final image.
+- ENTRYPOINT ["java", "-jar", "myapp.jar"]: Specifies the command to run the application.
 
 ## ❓Question : Why do we need a reverse proxy?
 
